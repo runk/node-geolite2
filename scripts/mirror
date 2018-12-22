@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd dbs
+cd ../dbs
 rm -rf *
 
 curl -O http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
