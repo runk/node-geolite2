@@ -15,6 +15,10 @@ var lookup = maxmind.openSync(geolite2.paths.city); // or geolite2.paths.country
 var city = lookup.get('66.6.44.4');
 ```
 
+## Alternatives
+
+[geolite2-redist](https://github.com/GitSquared/node-geolite2-redist) provides redistribution which does not require personal license key. Make sure you understand legal terms and what they mean for your use-case.
+
 ## License
 
 Creative Commons Attribution-ShareAlike 4.0 International License
