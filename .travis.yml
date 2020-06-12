@@ -1,18 +1,19 @@
 language: node_js
 node_js:
-  - "10"
-  - "12"
-  - "14"
-
+- '10'
+- '12'
+- '14'
 script:
-  - npm test
-
+- npm test
 jobs:
   include:
-    - stage: release
-      node_js: lts/*
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script:
-          - npx semantic-release
+  - stage: release
+    node_js: lts/*
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script:
+      - npx semantic-release
+env:
+  global:
+    secure: cYzGRWo45pJAuZ46xwni1xpNYlmZfQpMNmfKjSppTTlEc4vLgNXvl6/npkU5m10putrgTutVKb2Ow6XHEc7md0s1Bw3zqxAiZ3hdyh0kL2dEPLjOGb7DjgIhLYNk0Cy8W3JcwvdDANXUd30znXhbw+aR+U0kyZqcKxQab42Zn92swfXzpAxwHu79fpy/Ya+O5kTC+osGX6qCxGyfKHIXrTl1lEy/5d5UzUJw50PfZU1YIXWXyMheeNc2JJs9o65mC7MhZB98UICt6QTAfKkgnkpEs92t+RcihGPHafyoNRDZbuf91dn8v+e+XpZxSPGH+gULj752xlfc17aA4BwwOMJ/rM5r7ABEvRMNHQclE3h6oB9nZ/FgXlYchj04QA32YQ1Ps4mmDaqFE85KDrKvNBrd/jiPbBnteYEwDtLb74T1fZLQ8Yu5vdHf1VHtD+8rmew3/AkgfiAICAKLS9H0VO+IPhx8u2mEaGwXp/7wHJJiGsEPy+BH3zaFXvEjpTP0w2Uu6o1JBSIATyvVJ+v9ZHxiPOZoBITzo3JX/bZF1Lh3r/HuNUqw1PV4LHYKh67QddTuLI8jIEw8f9H/TfdelEPSOp5vSOQUl37ZFmUWZTUZUW8wO15JUC5i1KMUVsTLoCHCf/aR+GGMBRug91uEJxKepukaJjIBXG9stxfaApo=
