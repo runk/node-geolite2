@@ -1,6 +1,6 @@
 {
   "name": "geolite2",
-  "version": "3.0.0",
+  "version": "0.0.0-development",
   "description": "Maxmind's GeoLite2 Free Databases",
   "main": "index.js",
   "keywords": [
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/runk/node-geolite2.git"
+    "url": "https://github.com/runk/node-geolite2.git"
   },
   "author": "Dmitry Shirokov <deadrunk@gmail.com>",
   "license": "MIT",
@@ -32,6 +32,6 @@
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "semantic-release": "17.0.4"
+    "semantic-release": "^17.0.8"
   }
 }
