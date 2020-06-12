@@ -15,7 +15,7 @@
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
     "test": "scripts/test",
-    "release": "scripts/release"
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "tar": "^5.0.5"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "semantic-release": "17.0.4"
   }
 }
