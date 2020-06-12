@@ -5,8 +5,7 @@ node_js:
   - "14"
 
 script:
-  - npm run lint
-  - npm test --coverage
+  - npm test
 
 jobs:
   include:
