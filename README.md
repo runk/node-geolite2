@@ -9,7 +9,7 @@ Maxmind's GeoLite2 Free Databases download helper.
 
 If you don't have access to the environment variables during installation, you can provide license key via `package.json`:
 
-```json
+```jsonc
 {
   ...
   "geolite2": {
