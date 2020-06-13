@@ -4,21 +4,40 @@ const zlib = require('zlib');
 const path = require('path');
 const tar = require('tar');
 
-let licenseKey = process.env.MAXMIND_LICENSE_KEY;
-if (!licenseKey) {
-  try {
-    const packageJsonFilename = path.join(
-      process.env['INIT_CWD'],
-      'package.json'
-    );
-    const packageJson = JSON.parse(
-      fs.readFileSync(packageJsonFilename, 'utf8')
-    );
-    licenseKey = packageJson['node-geolite2']['license-key'];
-  } catch (e) {
-    console.error("Error reading Maxmind license key from 'package.json'");
-    console.error(e.message);
+const getConfig = () => {
+  const packageJsonFilename = path.join(
+    process.env['INIT_CWD'],
+    'package.json'
+  );
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonFilename, 'utf8'));
+  return packageJson['geolite2'] || {};
+};
+
+const keyLoaders = [
+  () => process.env.MAXMIND_LICENSE_KEY,
+  () => getConfig()['license-key'],
+  () => {
+    const configFile = getConfig()['license-file'];
+    if (!configFile) return;
+
+    const filepath = path.join(process.env['INIT_CWD'], configFile);
+    return fs.existsSync(filepath)
+      ? fs.readFileSync(filepath, 'utf8').trim()
+      : undefined;
+  },
+];
+
+let licenseKey;
+
+try {
+  let i = 0;
+  while (i < keyLoaders.length) {
+    licenseKey = keyLoaders[i++]();
+    if (licenseKey) break;
   }
+} catch (e) {
+  console.error('geolite2: Error retrieving Maxmind License Key');
+  console.error(e.message);
 }
 
 if (!licenseKey) {
@@ -31,7 +50,10 @@ if (!licenseKey) {
   file (at the root level) like this:
 
   "geolite2": {
-    "license-key": "<your license key>"
+    // specify the key
+    "license-key": "<your license key>",
+    // ... or specify the file where key is located:
+    "license-file": "maxmind-licence.key"
   }
 `);
   process.exit(1);
