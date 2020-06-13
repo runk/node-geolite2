@@ -13,11 +13,16 @@ If you don't have access to the environment variables during installation, you c
 {
   ...
   "geolite2": {
-    "license-key": "<your license key>"
+    // specify the key
+    "license-key": "<your license key>",
+    // ... or specify the file where key is located:
+    "license-file": "maxmind-licence.key"
   }
   ...
 }
 ```
+
+Beware of security risks of adding keys and secrets to your repository!
 
 ```javascript
 var geolite2 = require('geolite2');
