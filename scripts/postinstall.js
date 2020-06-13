@@ -4,12 +4,28 @@ const zlib = require("zlib");
 const path = require("path");
 const tar = require("tar");
 
-const licenseKey = process.env.MAXMIND_LICENSE_KEY;
+let licenseKey = process.env.MAXMIND_LICENSE_KEY;
+if (!licenseKey) {
+  try {
+    const packageJSONFilename = path.join(process.env["INIT_CWD"], "package.json");
+    const packageJSON = JSON.parse(fs.readFileSync(packageJSONFilename).toString());
+    licenseKey = packageJSON["node-geolite2"]["license-key"];
+  }
+  catch(e) {
+    console.error(`Error reading Maxmind license key from package.json: 
+    ${e.message}\n`);
+  }
+}
+
 if (!licenseKey) {
   console.error(`Error: License key is not configured.\n
   You need to signup for a _free_ Maxmind account to get a license key.
   Go to https://www.maxmind.com/en/geolite2/signup, obtain your key and
-  put it in the MAXMIND_LICENSE_KEY environment variable\n`);
+  put it in the MAXMIND_LICENSE_KEY environment variable
+  or in your package.json file (at the root level) like this:
+  "node-geolite2": {
+    "license-key": "<your license key>"
+  }\n`);
   process.exit(1);
 }
 
