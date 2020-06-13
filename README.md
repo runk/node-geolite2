@@ -7,6 +7,18 @@ Maxmind's GeoLite2 Free Databases download helper.
 
 **IMPORTANT** You must setup `MAXMIND_LICENSE_KEY` environment variable be able to download databases. To do so, go to the https://www.maxmind.com/en/geolite2/signup, create a free account and generate new license key.
 
+If you don't have access to the environment variables during installation, you can provide license key via `package.json`:
+
+```json
+{
+  ...
+  "geolite2": {
+    "license-key": "<your license key>"
+  }
+  ...
+}
+```
+
 ```javascript
 var geolite2 = require('geolite2');
 var maxmind = require('maxmind');
