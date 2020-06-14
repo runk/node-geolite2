@@ -3,7 +3,7 @@ node-geolite2 [![Build Status](https://travis-ci.org/runk/node-geolite2.png)](ht
 
 Maxmind's GeoLite2 Free Databases download helper.
 
-## Usage
+## Configuration
 
 **IMPORTANT** You must setup `MAXMIND_LICENSE_KEY` environment variable be able to download databases. To do so, go to the https://www.maxmind.com/en/geolite2/signup, create a free account and generate new license key.
 
@@ -16,13 +16,15 @@ If you don't have access to the environment variables during installation, you c
     // specify the key
     "license-key": "<your license key>",
     // ... or specify the file where key is located:
-    "license-file": "maxmind-licence.key"
+    "license-file": "maxmind-license.key"
   }
   ...
 }
 ```
 
 Beware of security risks of adding keys and secrets to your repository!
+
+## Usage
 
 ```javascript
 var geolite2 = require('geolite2');
