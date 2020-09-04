@@ -4,7 +4,7 @@ const fs = require('fs');
 const cwdPath = (file) => path.join(process.env['INIT_CWD'] || process.cwd(), file);
 
 const getConfig = () => {
-    const packageJsonFilename = cwdPath('package.json');
+  const packageJsonFilename = cwdPath('package.json');
   const packageJson = require(packageJsonFilename);
   return packageJson['geolite2'] || {};
 };
