@@ -33,5 +33,12 @@
   "devDependencies": {
     "mocha": "^5.2.0",
     "semantic-release": "^17.0.8"
+  },
+  "geolite2": {
+    "selected-dbs": [
+      "City",
+      "Country",
+      "ASN"
+    ]
   }
 }
