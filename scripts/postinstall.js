@@ -1,40 +1,13 @@
 const fs = require('fs');
 const https = require('https');
 const zlib = require('zlib');
-const path = require('path');
 const tar = require('tar');
-
-const getConfig = () => {
-  const packageJsonFilename = path.join(
-    process.env['INIT_CWD'],
-    'package.json'
-  );
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonFilename, 'utf8'));
-  return packageJson['geolite2'] || {};
-};
-
-const keyLoaders = [
-  () => process.env.MAXMIND_LICENSE_KEY,
-  () => getConfig()['license-key'],
-  () => {
-    const configFile = getConfig()['license-file'];
-    if (!configFile) return;
-
-    const filepath = path.join(process.env['INIT_CWD'], configFile);
-    return fs.existsSync(filepath)
-      ? fs.readFileSync(filepath, 'utf8').trim()
-      : undefined;
-  },
-];
+const path = require('path');
+const {getLicense, selectedDbs} = require('../utils');
 
 let licenseKey;
-
 try {
-  let i = 0;
-  while (i < keyLoaders.length) {
-    licenseKey = keyLoaders[i++]();
-    if (licenseKey) break;
-  }
+  licenseKey = getLicense();
 } catch (e) {
   console.error('geolite2: Error retrieving Maxmind License Key');
   console.error(e.message);
@@ -62,11 +35,14 @@ if (!licenseKey) {
 const link = (edition) =>
   `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
+
+const selected = selectedDbs();
 const links = [
-  link('GeoLite2-City'),
-  link('GeoLite2-Country'),
-  link('GeoLite2-ASN'),
-];
+  'City',
+  'Country',
+  'ASN',
+].filter(e => selected.includes(e))
+ .map(e => link(`GeoLite2-${e}`));
 
 const downloadPath = path.join(__dirname, '..', 'dbs');
 
