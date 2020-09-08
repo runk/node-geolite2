@@ -3,7 +3,7 @@ const https = require('https');
 const zlib = require('zlib');
 const tar = require('tar');
 const path = require('path');
-const {getLicense, selectedDbs} = require('../utils');
+const { getLicense, getSelectedDbs } = require('../utils');
 
 let licenseKey;
 try {
@@ -35,14 +35,10 @@ if (!licenseKey) {
 const link = (edition) =>
   `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
-
-const selected = selectedDbs();
-const links = [
-  'City',
-  'Country',
-  'ASN',
-].filter(e => selected.includes(e))
- .map(e => link(`GeoLite2-${e}`));
+const selected = getSelectedDbs();
+const links = ['City', 'Country', 'ASN']
+  .filter((e) => selected.includes(e))
+  .map((e) => link(`GeoLite2-${e}`));
 
 const downloadPath = path.join(__dirname, '..', 'dbs');
 
