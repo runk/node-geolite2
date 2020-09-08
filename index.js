@@ -1,9 +1,15 @@
-var path = require("path");
+const path = require("path");
+
+const {selectedDbs} = require('./utils');
+const selected = selectedDbs();
+
+const makePath = (type) => path.resolve(__dirname, `dbs/GeoLite2-${type}.mmdb`);
+
+const paths = selected.reduce((a,c) => {
+  a[c.toLowerCase()] = makePath(c);
+  return a;
+}, {});
 
 module.exports = {
-  paths: {
-    city: path.resolve(__dirname, "dbs/GeoLite2-City.mmdb"),
-    country: path.resolve(__dirname, "dbs/GeoLite2-Country.mmdb"),
-    asn: path.resolve(__dirname, "dbs/GeoLite2-ASN.mmdb")
-  }
+  paths
 };
