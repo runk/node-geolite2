@@ -36,9 +36,9 @@ const link = (edition) =>
   `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
 const selected = getSelectedDbs();
-const links = ['City', 'Country', 'ASN']
+const editionIds = ['City', 'Country', 'ASN']
   .filter((e) => selected.includes(e))
-  .map((e) => link(`GeoLite2-${e}`));
+  .map((e) => `GeoLite2-${e}`);
 
 const downloadPath = path.join(__dirname, '..', 'dbs');
 
@@ -51,14 +51,39 @@ const download = (url) =>
     });
   });
 
+// https://dev.maxmind.com/geoip/updating-databases?lang=en#checking-for-the-latest-release-date
+const getLastModified = (url) =>
+  new Promise((resolve, reject) => {
+    https.request(url, { method: 'HEAD'}, (res) => {
+      resolve(res.headers['last-modified'])
+    }).on('error', err => {
+      reject(err);
+    }).end();
+  });
+
 console.log('Downloading maxmind databases...');
-links.forEach((url) =>
-  download(url).then((result) =>
-    result.pipe(tar.t()).on('entry', (entry) => {
-      if (entry.path.endsWith('.mmdb')) {
-        const dstFilename = path.join(downloadPath, path.basename(entry.path));
-        entry.pipe(fs.createWriteStream(dstFilename));
+editionIds.forEach((editionId) => {
+  getLastModified(link(editionId)).then((lastModified) => {
+    const dbPath = path.join(downloadPath, `${editionId}.mmdb`);
+    const lastModifiedPath = path.join(downloadPath, `${editionId}.lastmodified`);
+    if (fs.existsSync(dbPath) && fs.existsSync(lastModifiedPath)) {
+      const lastDownloaded = fs.readFileSync(lastModifiedPath, {encoding: 'utf-8'})
+
+      if (lastModified.length > 0 && lastDownloaded === lastModified) {
+        console.log(`Found existing ${editionId}.mmdb, skipping download.`);
+        return;
       }
-    })
-  )
-);
+    }
+    download(link(editionId)).then((result) =>
+      result.pipe(tar.t()).on('entry', (entry) => {
+        if (entry.path.endsWith('.mmdb')) {
+          const dstFilename = path.join(downloadPath, path.basename(entry.path));
+          entry.pipe(fs.createWriteStream(dstFilename));
+          entry.on('end', () => {
+            fs.writeFileSync(lastModifiedPath, lastModified, {encoding: 'utf-8'})
+          });
+        }
+      })
+    );
+  })
+});
