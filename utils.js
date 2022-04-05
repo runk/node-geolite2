@@ -39,9 +39,12 @@ const getSelectedDbs = () => {
 
   if (selected.length === 0) return valids;
 
-  if (selected.length > 3) {
+  const validValuesText = valids.join(', ');
+  if (selected.length > valids.length) {
     console.error(
-      `selected-dbs has too many values, there are only three valid values: ${valids.join(', ')}.`
+      'Property selected-dbs has too many values, there are only %d valid values: %s',
+      valids.length,
+      validValuesText
     );
     process.exit(1);
   }
@@ -50,7 +53,9 @@ const getSelectedDbs = () => {
     const index = valids.indexOf(value);
     if (index === -1) {
       console.error(
-        `Invalid value in selected-dbs: ${value}. The only valid values are: ${valids.join(', ')}.`
+        'Invalid value in selected-dbs: %s The only valid values are: %s',
+        value,
+        validValuesText
       );
       process.exit(1);
     }

@@ -1,5 +1,4 @@
-node-geolite2
-========
+# node-geolite2
 
 Maxmind's GeoLite2 Free Databases download helper.
 
@@ -43,7 +42,6 @@ If `selected-dbs` is unset, or is set but empty, all dbs will be downloaded.
   ...
 }
 ```
-
 
 ## Usage
 
