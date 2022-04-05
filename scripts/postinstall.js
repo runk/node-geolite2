@@ -36,9 +36,9 @@ const link = (edition) =>
   `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
 const selected = getSelectedDbs();
-const links = ['City', 'Country', 'ASN']
+const editionIds = ['City', 'Country', 'ASN']
   .filter((e) => selected.includes(e))
-  .map((e) => link(`GeoLite2-${e}`));
+  .map((e) => `GeoLite2-${e}`);
 
 const downloadPath = path.join(__dirname, '..', 'dbs');
 
@@ -46,19 +46,56 @@ if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 
 const download = (url) =>
   new Promise((resolve) => {
-    https.get(url, function (response) {
+    https.get(url, (response) => {
       resolve(response.pipe(zlib.createGunzip({})));
     });
   });
 
-console.log('Downloading maxmind databases...');
-links.forEach((url) =>
-  download(url).then((result) =>
+// https://dev.maxmind.com/geoip/updating-databases?lang=en#checking-for-the-latest-release-date
+const isOutdated = async (dbPath, url) => {
+  if (!fs.existsSync(dbPath)) return true;
+
+  const remoteLastModified = await new Promise((resolve, reject) => {
+    https
+      .request(url, { method: 'HEAD' }, (res) =>
+        resolve(Date.parse(res.headers['last-modified']))
+      )
+      .on('error', (err) => reject(err))
+      .end();
+  });
+  const localLastModified = fs.statSync(dbPath).mtimeMs;
+
+  return localLastModified < remoteLastModified;
+};
+
+const main = async () => {
+  console.log('Downloading maxmind databases...');
+  for (const editionId of editionIds) {
+    const dbPath = path.join(downloadPath, `${editionId}.mmdb`);
+    const isOutdatedStatus = await isOutdated(dbPath, link(editionId));
+
+    if (!isOutdatedStatus) {
+      console.log(' > %s: Is up to date, skipping download', editionId);
+      continue;
+    }
+    console.log(' > %s: Is either missing or outdated, downloading', editionId);
+
+    const result = await download(link(editionId));
     result.pipe(tar.t()).on('entry', (entry) => {
       if (entry.path.endsWith('.mmdb')) {
         const dstFilename = path.join(downloadPath, path.basename(entry.path));
         entry.pipe(fs.createWriteStream(dstFilename));
+        entry.on('end', () => {});
       }
-    })
-  )
-);
+    });
+  }
+};
+
+main()
+  .then(() => {
+    // success
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
