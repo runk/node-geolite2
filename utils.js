@@ -6,8 +6,21 @@ const cwdPath = (file) =>
 
 const getConfig = () => {
   const packageJsonFilename = cwdPath('package.json');
-  const packageJson = require(packageJsonFilename);
-  return packageJson['geolite2'] || {};
+
+  try {
+    const packageJson = require(packageJsonFilename);
+    return packageJson['geolite2'] || {};
+  } catch {
+    console.log(
+      "WARN: geolite2 cannot find project's package.json file, using default configuration.\n" +
+        'WARN: geolite2 expects to have maxmind licence key to be present in `MAXMIND_LICENSE_KEY` env variable when package.json is unavailable.'
+    );
+    console.log(
+      'WARN: geolite2 expected package.json to be preset at:\n%s',
+      packageJsonFilename
+    );
+    return {};
+  }
 };
 
 const getLicense = () => {
