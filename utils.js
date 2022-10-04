@@ -1,40 +1,55 @@
 const path = require('path');
 const fs = require('fs');
 
-const cwdPath = (file) =>
-  path.join(process.env['INIT_CWD'] || process.cwd(), file);
+const getConfigWithDir = () => {
+  const cwd = process.env['INIT_CWD'] || process.cwd();
+  let dir = cwd;
+
+  // Find a package.json with geolite2 configuration at or above the level
+  // of this directory.
+  while (fs.existsSync(dir)) {
+    const packageJSON = path.join(dir, 'package.json');
+    if (fs.existsSync(packageJSON)) {
+      const contents = require(packageJSON);
+      const config = contents['geolite2'];
+      if (config) return { config, dir };
+    }
+
+    dir = path.join(dir, '..');
+  }
+
+  console.log(
+    "WARN: geolite2 cannot find project's package.json file, using default configuration.\n" +
+    'WARN: geolite2 expects to have maxmind licence key to be present in `MAXMIND_LICENSE_KEY` env variable when package.json is unavailable.'
+  );
+  console.log(
+    'WARN: geolite2 expected package.json to be preset at a parent of:\n%s',
+    cwd
+  );
+};
 
 const getConfig = () => {
-  const packageJsonFilename = cwdPath('package.json');
-
-  try {
-    const packageJson = require(packageJsonFilename);
-    return packageJson['geolite2'] || {};
-  } catch {
-    console.log(
-      "WARN: geolite2 cannot find project's package.json file, using default configuration.\n" +
-        'WARN: geolite2 expects to have maxmind licence key to be present in `MAXMIND_LICENSE_KEY` env variable when package.json is unavailable.'
-    );
-    console.log(
-      'WARN: geolite2 expected package.json to be preset at:\n%s',
-      packageJsonFilename
-    );
-    return {};
-  }
+  const configWithDir = getConfigWithDir();
+  if (!configWithDir) return;
+  return configWithDir.config;
 };
 
 const getLicense = () => {
   const envKey = process.env.MAXMIND_LICENSE_KEY;
   if (envKey) return envKey;
 
-  const config = getConfig();
+  const configWithDir = getConfigWithDir();
+  if (!configWithDir) return;
+
+  const { config, dir } = configWithDir;
+
   const licenseKey = config['license-key'];
   if (licenseKey) return licenseKey;
 
   const configFile = config['license-file'];
   if (!configFile) return;
 
-  const configFilePath = cwdPath(configFile);
+  const configFilePath = path.join(dir, configFile);
   return fs.existsSync(configFilePath)
     ? fs.readFileSync(configFilePath, 'utf8').trim()
     : undefined;
