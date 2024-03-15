@@ -34,6 +34,16 @@ const getConfig = () => {
   return configWithDir.config;
 };
 
+const getAccountId = () => {
+  const envId = process.env.MAXMIND_ACCOUNT_ID;
+  if (envId) return envId;
+
+  const config = getConfig();
+  if (!config) return;
+
+  return config['account-id'];
+}
+
 const getLicense = () => {
   const envKey = process.env.MAXMIND_LICENSE_KEY;
   if (envKey) return envKey;
@@ -94,6 +104,7 @@ const getSelectedDbs = () => {
 
 module.exports = {
   getConfig,
+  getAccountId,
   getLicense,
   getSelectedDbs,
 };

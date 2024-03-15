@@ -3,7 +3,7 @@ const https = require('https');
 const zlib = require('zlib');
 const tar = require('tar');
 const path = require('path');
-const { getLicense, getSelectedDbs } = require('../utils');
+const { getAccountId, getLicense, getSelectedDbs } = require('../utils');
 
 let licenseKey;
 try {
@@ -13,16 +13,26 @@ try {
   console.error(e.message);
 }
 
-if (!licenseKey) {
-  console.error(`Error: License key is not configured.\n
+let accountId;
+try {
+  accountId = getAccountId();
+} catch (e) {
+  console.error('geolite2: Error retrieving Maxmind Account ID');
+  console.error(e.message);
+}
+
+if (!licenseKey || !accountId) {
+  console.error(`Error: License Key or Account ID is not configured.\n
   You need to signup for a _free_ Maxmind account to get a license key.
   Go to https://www.maxmind.com/en/geolite2/signup, obtain your key and
   put it in the MAXMIND_LICENSE_KEY environment variable.
 
-  If you don not have access to env vars, put this config in your package.json
+  If you do not have access to env vars, put this config in your package.json
   file (at the root level) like this:
 
   "geolite2": {
+    // specify the account id
+    "account-id": "<your account id>",
     // specify the key
     "license-key": "<your license key>",
     // ... or specify the file where key is located:
