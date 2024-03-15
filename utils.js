@@ -15,7 +15,9 @@ const getConfigWithDir = () => {
       if (config) return { config, dir };
     }
 
-    dir = path.join(dir, '..');
+    const parentDir = path.resolve(dir, '..');
+    if (parentDir === dir) break;
+    dir = parentDir;
   }
 
   console.log(
