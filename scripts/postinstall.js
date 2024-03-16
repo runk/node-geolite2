@@ -106,13 +106,23 @@ const main = async () => {
     console.log(' > %s: Is either missing or outdated, downloading', editionId);
 
     const response = await request(link(editionId));
-    response.pipe(zlib.createGunzip());
-    response.pipe(tar.t()).on('entry', (entry) => {
-      if (entry.path.endsWith('.mmdb')) {
-        const dstFilename = path.join(downloadPath, path.basename(entry.path));
-        entry.pipe(fs.createWriteStream(dstFilename));
-      }
-    });
+    const entryPromises = [];
+    await new Promise((resolve, reject) => response
+      .pipe(zlib.createGunzip())
+      .pipe(tar.t())
+      .on('entry', (entry) => {
+        if (entry.path.endsWith('.mmdb')) {
+          const dstFilename = path.join(downloadPath, path.basename(entry.path));
+          console.log(`writing ${dstFilename} ...`);
+          entryPromises.push(new Promise((resolve, reject) => {
+            entry.pipe(fs.createWriteStream(dstFilename)).on('finish', resolve).on('error', reject);
+          }));
+        }
+      })
+      .on('end', resolve)
+      .on('error', reject)
+    );
+    await Promise.all(entryPromises);
   }
 };
 
