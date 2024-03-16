@@ -57,7 +57,10 @@ if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 const request = async (url, options) => {
   const response = await new Promise((resolve, reject) => {
     https
-      .request(url, options, (response) => {
+      .request(url, {
+        auth: `${accountId}:${licenseKey}`,
+        ...options
+      }, (response) => {
         resolve(response);
       })
       .on('error', (err) => reject(err))
@@ -66,7 +69,10 @@ const request = async (url, options) => {
 
   if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
     // Handle redirect
-    return request(response.headers.location, options);
+    return request(response.headers.location, {
+      ...options,
+      auth: null
+    });
   }
 
   if (response.statusCode !== 200) {
