@@ -130,6 +130,7 @@ const main = async () => {
 main()
   .then(() => {
     // success
+    process.exit(0);
   })
   .catch((err) => {
     console.error(err);
