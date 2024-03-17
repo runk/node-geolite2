@@ -15,7 +15,9 @@ const getConfigWithDir = () => {
       if (config) return { config, dir };
     }
 
-    dir = path.join(dir, '..');
+    const parentDir = path.resolve(dir, '..');
+    if (parentDir === dir) break;
+    dir = parentDir;
   }
 
   console.log(
@@ -56,10 +58,11 @@ const getLicense = () => {
 };
 
 const getSelectedDbs = () => {
-  const config = getConfig();
-  const selected = config['selected-dbs'];
   const valids = ['City', 'Country', 'ASN'];
-  if (!selected) return valids;
+
+  const config = getConfig();
+  const selected = config?.['selected-dbs'] ?? valids;
+
   if (!Array.isArray(selected)) {
     console.error('selected-dbs property must have be an array.');
     process.exit(1);
