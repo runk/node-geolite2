@@ -24,8 +24,9 @@ try {
 if (!licenseKey || !accountId) {
   console.error(`Error: License Key or Account ID is not configured.\n
   You need to signup for a _free_ Maxmind account to get a license key.
-  Go to https://www.maxmind.com/en/geolite2/signup, obtain your key and
-  put it in the MAXMIND_LICENSE_KEY environment variable.
+  Go to https://www.maxmind.com/en/geolite2/signup, obtain your account ID and
+  license key and put them in the MAXMIND_ACCOUNT_ID and MAXMIND_LICENSE_KEY
+  environment variables.
 
   If you do not have access to env vars, put this config in your package.json
   file (at the root level) like this:
