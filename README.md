@@ -27,6 +27,8 @@ If you don't have access to the environment variables during installation, you c
 
 Beware of security risks of adding keys and secrets to your repository!
 
+**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended. 
+
 ### Selecting databases to download
 
 You can select the dbs you want downloaded by adding a `selected-dbs` property on `geolite2` via `package.json`.
