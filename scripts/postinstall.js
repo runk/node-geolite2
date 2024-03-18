@@ -76,16 +76,22 @@ const request = async (url, options) => {
       .end();
   });
 
-  if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+  if (
+    response.statusCode >= 300 &&
+    response.statusCode < 400 &&
+    response.headers.location
+  ) {
     // Handle redirect
     return request(response.headers.location, {
       ...options,
-      auth: null
+      auth: null,
     });
   }
 
   if (response.statusCode !== 200) {
-    throw new Error(`Request failed to ${url} - ${response.statusCode} ${response.statusMessage}`);
+    throw new Error(
+      `Request failed to ${url} - ${response.statusCode} ${response.statusMessage}`
+    );
   }
 
   return response;
@@ -116,20 +122,29 @@ const main = async () => {
 
     const response = await request(link(editionId));
     const entryPromises = [];
-    await new Promise((resolve, reject) => response
-      .pipe(zlib.createGunzip())
-      .pipe(tar.t())
-      .on('entry', (entry) => {
-        if (entry.path.endsWith('.mmdb')) {
-          const dstFilename = path.join(downloadPath, path.basename(entry.path));
-          console.log(`writing ${dstFilename} ...`);
-          entryPromises.push(new Promise((resolve, reject) => {
-            entry.pipe(fs.createWriteStream(dstFilename)).on('finish', resolve).on('error', reject);
-          }));
-        }
-      })
-      .on('end', resolve)
-      .on('error', reject)
+    await new Promise((resolve, reject) =>
+      response
+        .pipe(zlib.createGunzip())
+        .pipe(tar.t())
+        .on('entry', (entry) => {
+          if (entry.path.endsWith('.mmdb')) {
+            const dstFilename = path.join(
+              downloadPath,
+              path.basename(entry.path)
+            );
+            console.log(`writing ${dstFilename} ...`);
+            entryPromises.push(
+              new Promise((resolve, reject) => {
+                entry
+                  .pipe(fs.createWriteStream(dstFilename))
+                  .on('finish', resolve)
+                  .on('error', reject);
+              })
+            );
+          }
+        })
+        .on('end', resolve)
+        .on('error', reject)
     );
     await Promise.all(entryPromises);
   }
