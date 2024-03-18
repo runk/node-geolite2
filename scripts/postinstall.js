@@ -21,8 +21,8 @@ try {
   console.error(e.message);
 }
 
-if (!licenseKey || !accountId) {
-  console.error(`Error: License Key or Account ID is not configured.\n
+if (!licenseKey) {
+  console.error(`Error: License Key is not configured.\n
   You need to signup for a _free_ Maxmind account to get a license key.
   Go to https://www.maxmind.com/en/geolite2/signup, obtain your account ID and
   license key and put them in the MAXMIND_ACCOUNT_ID and MAXMIND_LICENSE_KEY
@@ -43,8 +43,12 @@ if (!licenseKey || !accountId) {
   process.exit(1);
 }
 
+// If an account ID is set, use the new URL path with Basic auth.
+// Otherwise, fall back to the legacy URL path with license key as query parameter.
 const link = (edition) =>
-  `https://download.maxmind.com/geoip/databases/${edition}/download?suffix=tar.gz`;
+  accountId
+    ? `https://download.maxmind.com/geoip/databases/${edition}/download?suffix=tar.gz`
+    : `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
 const selected = getSelectedDbs();
 const editionIds = ['City', 'Country', 'ASN']
@@ -58,12 +62,16 @@ if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 const request = async (url, options) => {
   const response = await new Promise((resolve, reject) => {
     https
-      .request(url, {
-        auth: `${accountId}:${licenseKey}`,
-        ...options
-      }, (response) => {
-        resolve(response);
-      })
+      .request(
+        url,
+        {
+          auth: accountId ? `${accountId}:${licenseKey}` : null,
+          ...options,
+        },
+        (response) => {
+          resolve(response);
+        }
+      )
       .on('error', (err) => reject(err))
       .end();
   });
