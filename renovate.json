@@ -1,0 +1,14 @@
+{
+  "extends": ["config:base", ":disableDependencyDashboard"],
+  "schedule": "on the first day of the month",
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    }
+  ]
+}
