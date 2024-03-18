@@ -61,7 +61,10 @@ const getSelectedDbs = () => {
   const valids = ['City', 'Country', 'ASN'];
 
   const config = getConfig();
-  const selected = config?.['selected-dbs'] ?? valids;
+  const selected =
+    config != null && config['selected-dbs'] != null
+      ? config['selected-dbs']
+      : valids;
 
   if (!Array.isArray(selected)) {
     console.error('selected-dbs property must have be an array.');
