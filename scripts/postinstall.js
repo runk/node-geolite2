@@ -1,8 +1,8 @@
 const fs = require('fs');
-const https = require('https');
 const zlib = require('zlib');
 const tar = require('tar');
 const path = require('path');
+const fetch = require('node-fetch');
 const { getAccountId, getLicense, getSelectedDbs } = require('../utils');
 
 let licenseKey;
@@ -60,37 +60,21 @@ const downloadPath = path.join(__dirname, '..', 'dbs');
 if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 
 const request = async (url, options) => {
-  const response = await new Promise((resolve, reject) => {
-    https
-      .request(
-        url,
-        {
-          auth: accountId ? `${accountId}:${licenseKey}` : null,
-          ...options,
-        },
-        (response) => {
-          resolve(response);
+  const response = await fetch(url, {
+    headers: accountId
+      ? {
+          Authorization: `Basic ${Buffer.from(
+            `${accountId}:${licenseKey}`
+          ).toString('base64')}`,
         }
-      )
-      .on('error', (err) => reject(err))
-      .end();
+      : undefined,
+    redirect: 'follow',
+    ...options,
   });
 
-  if (
-    response.statusCode >= 300 &&
-    response.statusCode < 400 &&
-    response.headers.location
-  ) {
-    // Handle redirect
-    return request(response.headers.location, {
-      ...options,
-      auth: null,
-    });
-  }
-
-  if (response.statusCode !== 200) {
+  if (!response.ok) {
     throw new Error(
-      `Request failed to ${url} - ${response.statusCode} ${response.statusMessage}`
+      `Failed to fetch ${url}: ${response.status} ${response.statusText}`
     );
   }
 
@@ -123,7 +107,7 @@ const main = async () => {
     const response = await request(link(editionId));
     const entryPromises = [];
     await new Promise((resolve, reject) =>
-      response
+      response.body
         .pipe(zlib.createGunzip())
         .pipe(tar.t())
         .on('entry', (entry) => {
