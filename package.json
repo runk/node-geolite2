@@ -35,6 +35,6 @@
   "devDependencies": {
     "mocha": "^5.2.0",
     "prettier": "^2.6.0",
-    "semantic-release": "^17.0.8"
+    "semantic-release": "^23.0.0"
   }
 }
