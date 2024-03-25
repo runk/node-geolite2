@@ -5,7 +5,7 @@ const getConfigWithDir = () => {
   const cwd = process.env['INIT_CWD'] || process.cwd();
   let dir = cwd;
 
-  // Find a package.json with geolite2 configuration at or above the level
+  // Find a package.json with geolite2 configuration key at or above the level
   // of this directory.
   while (fs.existsSync(dir)) {
     const packageJSON = path.join(dir, 'package.json');
@@ -21,11 +21,11 @@ const getConfigWithDir = () => {
   }
 
   console.log(
-    "WARN: geolite2 cannot find configuration in package.json file, using defaults.\n" +
-    "WARN: geolite2 expects to have 'MAXMIND_ACCOUNT_ID' and 'MAXMIND_LICENSE_KEY' to be present in environment variables when package.json is unavailable.",
+    "INFO: geolite2 cannot find configuration in package.json file, using defaults.\n" +
+    "INFO: geolite2 expects to have 'MAXMIND_ACCOUNT_ID' and 'MAXMIND_LICENSE_KEY' to be present in environment variables when package.json is unavailable.",
   );
   console.log(
-    'WARN: geolite2 expected package.json to be present at a parent of:\n%s',
+    'INFO: geolite2 expected package.json to be present at a parent of:\n%s',
     cwd
   );
 };
