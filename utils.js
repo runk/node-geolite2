@@ -21,11 +21,11 @@ const getConfigWithDir = () => {
   }
 
   console.log(
-    "WARN: geolite2 cannot find project's package.json file, using default configuration.\n" +
-    'WARN: geolite2 expects to have maxmind licence key to be present in `MAXMIND_LICENSE_KEY` env variable when package.json is unavailable.'
+    "WARN: geolite2 cannot find configuration in package.json file, using defaults.\n" +
+    "WARN: geolite2 expects to have 'MAXMIND_ACCOUNT_ID' and 'MAXMIND_LICENSE_KEY' to be present in environment variables when package.json is unavailable.",
   );
   console.log(
-    'WARN: geolite2 expected package.json to be preset at a parent of:\n%s',
+    'WARN: geolite2 expected package.json to be present at a parent of:\n%s',
     cwd
   );
 };
@@ -35,6 +35,16 @@ const getConfig = () => {
   if (!configWithDir) return;
   return configWithDir.config;
 };
+
+const getAccountId = () => {
+  const envId = process.env.MAXMIND_ACCOUNT_ID;
+  if (envId) return envId;
+
+  const config = getConfig();
+  if (!config) return;
+
+  return config['account-id'];
+}
 
 const getLicense = () => {
   const envKey = process.env.MAXMIND_LICENSE_KEY;
@@ -100,6 +110,7 @@ const getSelectedDbs = () => {
 
 module.exports = {
   getConfig,
+  getAccountId,
   getLicense,
   getSelectedDbs,
 };

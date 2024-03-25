@@ -6,14 +6,16 @@ Maxmind's GeoLite2 Free Databases download helper.
 
 ### Access Key
 
-**IMPORTANT** You must setup `MAXMIND_LICENSE_KEY` environment variable be able to download databases. To do so, go to the https://www.maxmind.com/en/geolite2/signup, create a free account and generate new license key.
+**IMPORTANT** You must set up `MAXMIND_ACCOUNT_ID` and `MAXMIND_LICENSE_KEY` environment variables to be able to download databases. To do so, go to the https://www.maxmind.com/en/geolite2/signup, create a free account and generate new license key.
 
-If you don't have access to the environment variables during installation, you can provide license key via `package.json`:
+If you don't have access to the environment variables during installation, you can provide config via `package.json`:
 
 ```jsonc
 {
   ...
   "geolite2": {
+    // specify the account id
+    "account-id": "<your account id>",
     // specify the key
     "license-key": "<your license key>",
     // ... or specify the file where key is located:
@@ -24,6 +26,8 @@ If you don't have access to the environment variables during installation, you c
 ```
 
 Beware of security risks of adding keys and secrets to your repository!
+
+**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended. 
 
 ### Selecting databases to download
 
