@@ -39,3 +39,4 @@ package-lock.json
 dbs/*
 
 .DS_Store
+.vscode
