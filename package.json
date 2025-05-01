@@ -34,7 +34,7 @@
     "tar": "^7.0.0"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
+    "mocha": "^11.0.0",
     "prettier": "^3.0.0",
     "semantic-release": "^24.0.0"
   }
