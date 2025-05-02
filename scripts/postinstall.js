@@ -50,10 +50,7 @@ const link = (edition) =>
     ? `https://download.maxmind.com/geoip/databases/${edition}/download?suffix=tar.gz`
     : `https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${licenseKey}&suffix=tar.gz`;
 
-const selected = getSelectedDbs();
-const editionIds = ['City', 'Country', 'ASN']
-  .filter((e) => selected.includes(e))
-  .map((e) => `GeoLite2-${e}`);
+const editionIds = getSelectedDbs();
 
 const downloadPath = path.join(__dirname, '..', 'dbs');
 

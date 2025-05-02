@@ -1,6 +1,6 @@
 # node-geolite2
 
-Maxmind's GeoLite2 Free Databases download helper.
+Maxmind's GeoLite2 Free Databases download helper. Also supports Maxmind's paid GeoIP2 databases.
 
 ## Configuration
 
@@ -27,15 +27,15 @@ If you don't have access to the environment variables during installation, you c
 
 Beware of security risks of adding keys and secrets to your repository!
 
-**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended. 
+**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended.
 
 ### Selecting databases to download
 
 You can select the dbs you want downloaded by adding a `selected-dbs` property on `geolite2` via `package.json`.
 
-`selected-dbs` must be an array of strings, one or more of the values `City`, `Country`, `ASN`.
+`selected-dbs` must be an array of strings. To download the GeoLite databases, you can use one or more of the values `City`, `Country`, `ASN`. To download any database, including paid databases, you can use the full edition ID. For example, `GeoIP2-Enterprise`, `GeoIP2-City`, `GeoLite2-City`, etc (downloading paid databases requires an active subscription).
 
-If `selected-dbs` is unset, or is set but empty, all dbs will be downloaded.
+If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will be downloaded.
 
 ```jsonc
 {
@@ -53,7 +53,10 @@ If `selected-dbs` is unset, or is set but empty, all dbs will be downloaded.
 var geolite2 = require('geolite2');
 var maxmind = require('maxmind');
 
-var lookup = maxmind.openSync(geolite2.paths.city); // or geolite2.paths.country or geolite2.paths.asn
+// The database paths are available under geolite2.paths.city,
+// geolite2.paths.country, or geolite2.paths.asn, or by
+// using the full (lower-cased) edition ID, e.g. geolite2.paths['geolite2-asn']
+var lookup = maxmind.openSync(geolite2.paths.city);
 var city = lookup.get('66.6.44.4');
 ```
 
