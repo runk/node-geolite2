@@ -33,7 +33,7 @@ Beware of security risks of adding keys and secrets to your repository!
 
 You can select the dbs you want downloaded by adding a `selected-dbs` property on `geolite2` via `package.json`.
 
-`selected-dbs` must be an array of strings. To download the GeoLite databases, you can use one or more of the values `City`, `Country`, `ASN`. To download any database, including paid databases, you can use the full edition ID. For example, `GeoIP2-Enterprise`, `GeoIP2-City`, `GeoLite2-City`, etc (downloading paid databases requires an active subscription).
+`selected-dbs` must be an array of edition IDs. For example, `GeoIP2-Enterprise`, `GeoIP2-City`, `GeoLite2-City`, etc (downloading paid databases requires an active subscription).
 
 If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will be downloaded.
 
@@ -41,7 +41,7 @@ If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will b
 {
   ...
   "geolite2": {
-    "selected-dbs": ["City", "Country", "ASN"]
+    "selected-dbs": ["GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"]
   }
   ...
 }
@@ -53,10 +53,9 @@ If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will b
 var geolite2 = require('geolite2');
 var maxmind = require('maxmind');
 
-// The database paths are available under geolite2.paths.city,
-// geolite2.paths.country, or geolite2.paths.asn, or by
-// using the full (lower-cased) edition ID, e.g. geolite2.paths['geolite2-asn']
-var lookup = maxmind.openSync(geolite2.paths.city);
+// The database paths are available under geolite2.paths using the full edition
+// ID, e.g. geolite2.paths['GeoLite2-ASN']
+var lookup = maxmind.openSync(geolite2.paths['GeoLite2-City']);
 var city = lookup.get('66.6.44.4');
 ```
 

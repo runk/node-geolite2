@@ -113,12 +113,12 @@ const getSelectedDbs = () => {
 
   if (selectedWithPossibleAliases.length === 0) return defaultEditions;
 
-  const selectedEditions = selectedWithPossibleAliases.map(element => {
+  const selectedEditions = selectedWithPossibleAliases.map((element) => {
     index = aliases.indexOf(element);
     if (index > -1) {
       return `GeoLite2-${element}`;
     } else {
-      return element
+      return element;
     }
   });
 
@@ -127,7 +127,7 @@ const getSelectedDbs = () => {
     console.error(
       'Property selected-dbs has too many values, there are only %d valid values: %s',
       validEditions.length,
-      validValuesText
+      validValuesText,
     );
     process.exit(1);
   }
@@ -138,7 +138,7 @@ const getSelectedDbs = () => {
       console.error(
         'Invalid value in selected-dbs: %s The only valid values are: %s',
         value,
-        validValuesText
+        validValuesText,
       );
       process.exit(1);
     }
