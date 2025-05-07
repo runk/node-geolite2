@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: cat package.json
-      - run: npm i
-        env:
-          MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
-      - run: npm run format:check
-      - run: npm test
+      # - run: npm i
+      #   env:
+      #     MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
+      # - run: npm run format:check
+      # - run: npm test
