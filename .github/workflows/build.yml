@@ -3,9 +3,9 @@ name: Build
 on:
   push:
     branches: [master]
-  pull_request_target:
+  pull_request:
     branches: ['*']
-    types: [opened, synchronize]
+    # types: [opened, synchronize]
 
 jobs:
   build:
