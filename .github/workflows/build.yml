@@ -3,8 +3,9 @@ name: Build
 on:
   push:
     branches: [master]
-  pull_request:
+  pull_request_target:
     branches: ['*']
+    types: [opened, synchronize]
 
 jobs:
   build:
@@ -12,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v4
