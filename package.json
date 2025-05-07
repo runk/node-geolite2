@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^2.7.0",
     "tar": "^7.0.0"
   },
   "devDependencies": {
