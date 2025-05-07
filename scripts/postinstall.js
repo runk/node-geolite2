@@ -2,7 +2,8 @@ const fs = require('fs');
 const zlib = require('zlib');
 const tar = require('tar');
 const path = require('path');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch').default;
+
 const { getAccountId, getLicense, getSelectedDbs } = require('../utils');
 
 let licenseKey;
