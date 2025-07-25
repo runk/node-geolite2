@@ -114,12 +114,13 @@ const getSelectedDbs = () => {
   if (selectedWithPossibleAliases.length === 0) return defaultEditions;
 
   const selectedEditions = selectedWithPossibleAliases.map((element) => {
-    index = aliases.indexOf(element);
+    const index = aliases.indexOf(element);
+    
     if (index > -1) {
       return `GeoLite2-${element}`;
-    } else {
-      return element;
     }
+    
+    return element;
   });
 
   const validValuesText = validEditions.join(', ');
