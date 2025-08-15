@@ -84,7 +84,7 @@ const isOutdated = async (dbPath, url) => {
   if (!fs.existsSync(dbPath)) return true;
 
   const response = await request(url, { method: 'HEAD' });
-  const remoteLastModified = Date.parse(response.headers['last-modified']);
+  const remoteLastModified = Date.parse(response.headers.get('last-modified'));
   const localLastModified = fs.statSync(dbPath).mtimeMs;
 
   return localLastModified < remoteLastModified;
