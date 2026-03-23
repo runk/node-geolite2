@@ -4,6 +4,15 @@
   "description": "Maxmind's GeoLite2 Free Databases",
   "type": "module",
   "types": "./index.d.ts",
+  "files": [
+    "dbs",
+    "index.d.ts",
+    "index.js",
+    "LICENSE",
+    "README.md",
+    "scripts",
+    "src"
+  ],
   "exports": {
     ".": {
       "types": "./index.d.ts",
