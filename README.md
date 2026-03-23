@@ -12,22 +12,22 @@ If you don't have access to the environment variables during installation, you c
 
 ```jsonc
 {
-  ...
+  // ...
   "geolite2": {
     // specify the account id
     "account-id": "<your account id>",
     // specify the key
     "license-key": "<your license key>",
     // ... or specify the file where key is located:
-    "license-file": "maxmind-license.key"
-  }
-  ...
+    "license-file": "maxmind-license.key",
+  },
+  // ...
 }
 ```
 
 Beware of security risks of adding keys and secrets to your repository!
 
-**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended.
+**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behaviour may become unsupported in the future so adding an account ID is recommended.
 
 ### Selecting databases to download
 
@@ -39,11 +39,11 @@ If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will b
 
 ```jsonc
 {
-  ...
+  // ...
   "geolite2": {
-    "selected-dbs": ["GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"]
-  }
-  ...
+    "selected-dbs": ["GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"],
+  },
+  // ...
 }
 ```
 

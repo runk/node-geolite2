@@ -21,12 +21,11 @@ const getConfigWithDir = () => {
   }
 
   console.log(
-    "INFO: geolite2 cannot find configuration in package.json file, using defaults.\n" +
-    "INFO: geolite2 expects to have 'MAXMIND_ACCOUNT_ID' and 'MAXMIND_LICENSE_KEY' to be present in environment variables when package.json is unavailable.",
+    'INFO: geolite2 cannot find configuration in package.json file, using defaults.',
   );
   console.log(
     'INFO: geolite2 expected package.json to be present at a parent of:\n%s',
-    cwd
+    cwd,
   );
 };
 
@@ -44,7 +43,7 @@ const getAccountId = () => {
   if (!config) return;
 
   return config['account-id'];
-}
+};
 
 const getLicense = () => {
   const envKey = process.env.MAXMIND_LICENSE_KEY;
@@ -115,11 +114,11 @@ const getSelectedDbs = () => {
 
   const selectedEditions = selectedWithPossibleAliases.map((element) => {
     const index = aliases.indexOf(element);
-    
+
     if (index > -1) {
       return `GeoLite2-${element}`;
     }
-    
+
     return element;
   });
 
@@ -148,9 +147,17 @@ const getSelectedDbs = () => {
   return selectedEditions;
 };
 
+const maskLicenseKey = (licenseKey) => {
+  if (!licenseKey) return 'NOT SET';
+  if (licenseKey.length <= 4) return '****';
+  const visiblePart = licenseKey.slice(-4);
+  return '****' + visiblePart;
+};
+
 module.exports = {
   getConfig,
   getAccountId,
   getLicense,
   getSelectedDbs,
+  maskLicenseKey,
 };

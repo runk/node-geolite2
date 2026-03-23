@@ -4,23 +4,26 @@ const tar = require('tar');
 const path = require('path');
 const fetch = require('node-fetch');
 
-const { getAccountId, getLicense, getSelectedDbs } = require('../utils');
+const { getAccountId, getLicense, getSelectedDbs, maskLicenseKey } = require('../utils');
+
+let accountId;
+try {
+  accountId = getAccountId();
+  console.log('geolite2: Using Maxmind Account ID: %s', accountId);
+} catch (e) {
+  console.error('geolite2: Error retrieving Maxmind Account ID');
+  console.error(e.message);
+}
 
 let licenseKey;
 try {
   licenseKey = getLicense();
+  console.log('geolite2: Using Maxmind License Key: %s', maskLicenseKey(licenseKey));
 } catch (e) {
   console.error('geolite2: Error retrieving Maxmind License Key');
   console.error(e.message);
 }
 
-let accountId;
-try {
-  accountId = getAccountId();
-} catch (e) {
-  console.error('geolite2: Error retrieving Maxmind Account ID');
-  console.error(e.message);
-}
 
 if (!licenseKey) {
   console.error(`Error: License Key is not configured.\n
@@ -29,7 +32,7 @@ if (!licenseKey) {
   license key and put them in the MAXMIND_ACCOUNT_ID and MAXMIND_LICENSE_KEY
   environment variables.
 
-  If you do not have access to env vars, put this config in your package.json
+  If you do not have access to env variables, put this config in your package.json
   file (at the root level) like this:
 
   "geolite2": {
@@ -62,7 +65,7 @@ const request = async (url, options) => {
     headers: accountId
       ? {
           Authorization: `Basic ${Buffer.from(
-            `${accountId}:${licenseKey}`
+            `${accountId}:${licenseKey}`,
           ).toString('base64')}`,
         }
       : undefined,
@@ -72,7 +75,7 @@ const request = async (url, options) => {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch ${url}: ${response.status} ${response.statusText}`
+      `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
     );
   }
 
@@ -112,7 +115,7 @@ const main = async () => {
           if (entry.path.endsWith('.mmdb')) {
             const dstFilename = path.join(
               downloadPath,
-              path.basename(entry.path)
+              path.basename(entry.path),
             );
             console.log(`writing ${dstFilename} ...`);
             entryPromises.push(
@@ -121,12 +124,12 @@ const main = async () => {
                   .pipe(fs.createWriteStream(dstFilename))
                   .on('finish', resolve)
                   .on('error', reject);
-              })
+              }),
             );
           }
         })
         .on('end', resolve)
-        .on('error', reject)
+        .on('error', reject),
     );
     await Promise.all(entryPromises);
   }
