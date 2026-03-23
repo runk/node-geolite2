@@ -2,6 +2,8 @@
 
 Maxmind's GeoLite2 Free Databases download helper. Also supports Maxmind's paid GeoIP2 databases.
 
+Requires Node 20+ and ships with TypeScript definitions.
+
 ## Configuration
 
 ### Access Key
@@ -12,22 +14,22 @@ If you don't have access to the environment variables during installation, you c
 
 ```jsonc
 {
-  ...
+  // ...
   "geolite2": {
     // specify the account id
     "account-id": "<your account id>",
     // specify the key
     "license-key": "<your license key>",
     // ... or specify the file where key is located:
-    "license-file": "maxmind-license.key"
-  }
-  ...
+    "license-file": "maxmind-license.key",
+  },
+  // ...
 }
 ```
 
 Beware of security risks of adding keys and secrets to your repository!
 
-**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behavior may become unsupported in the future so adding an account ID is recommended.
+**Note:** For backwards compatibility, the account ID is currently optional. When not provided we fall back to using legacy Maxmind download URLs with only the license key. However, this behaviour may become unsupported in the future so adding an account ID is recommended.
 
 ### Selecting databases to download
 
@@ -39,24 +41,30 @@ If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will b
 
 ```jsonc
 {
-  ...
+  // ...
   "geolite2": {
-    "selected-dbs": ["GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"]
-  }
-  ...
+    "selected-dbs": ["GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"],
+  },
+  // ...
 }
 ```
 
 ## Usage
 
 ```javascript
-var geolite2 = require('geolite2');
-var maxmind = require('maxmind');
+import geolite2 from 'geolite2';
+import maxmind from 'maxmind';
 
 // The database paths are available under geolite2.paths using the full edition
 // ID, e.g. geolite2.paths['GeoLite2-ASN']
-var lookup = maxmind.openSync(geolite2.paths['GeoLite2-City']);
-var city = lookup.get('66.6.44.4');
+const lookup = maxmind.openSync(geolite2.paths['GeoLite2-City']);
+const city = lookup.get('66.6.44.4');
+```
+
+Named import is also supported:
+
+```javascript
+import { paths } from 'geolite2';
 ```
 
 ## Alternatives
