@@ -2,6 +2,8 @@
 
 Maxmind's GeoLite2 Free Databases download helper. Also supports Maxmind's paid GeoIP2 databases.
 
+Requires Node 20+ and ships with TypeScript definitions.
+
 ## Configuration
 
 ### Access Key
@@ -50,13 +52,19 @@ If `selected-dbs` is unset, or is set but empty, all the free GeoLite dbs will b
 ## Usage
 
 ```javascript
-var geolite2 = require('geolite2');
-var maxmind = require('maxmind');
+import geolite2 from 'geolite2';
+import maxmind from 'maxmind';
 
 // The database paths are available under geolite2.paths using the full edition
 // ID, e.g. geolite2.paths['GeoLite2-ASN']
-var lookup = maxmind.openSync(geolite2.paths['GeoLite2-City']);
-var city = lookup.get('66.6.44.4');
+const lookup = maxmind.openSync(geolite2.paths['GeoLite2-City']);
+const city = lookup.get('66.6.44.4');
+```
+
+Named import is also supported:
+
+```javascript
+import { paths } from 'geolite2';
 ```
 
 ## Alternatives

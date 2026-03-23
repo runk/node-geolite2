@@ -1,10 +1,22 @@
-const fs = require('fs');
-const zlib = require('zlib');
-const tar = require('tar');
-const path = require('path');
-const fetch = require('node-fetch');
+import fs from 'node:fs';
+import path from 'node:path';
+import { Readable } from 'node:stream';
+import { fileURLToPath } from 'node:url';
+import zlib from 'node:zlib';
 
-const { getAccountId, getLicense, getSelectedDbs, maskLicenseKey } = require('../utils');
+import * as tar from 'tar';
+
+import {
+  getSelectedDbs,
+} from '../src/databases.js';
+import {
+  getAccountId,
+  getLicense,
+  maskLicenseKey,
+} from '../src/config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let accountId;
 try {
@@ -87,9 +99,10 @@ const isOutdated = async (dbPath, url) => {
   if (!fs.existsSync(dbPath)) return true;
 
   const response = await request(url, { method: 'HEAD' });
-  const remoteLastModified = Date.parse(response.headers['last-modified']);
+  const remoteLastModified = Date.parse(response.headers.get('last-modified'));
   const localLastModified = fs.statSync(dbPath).mtimeMs;
 
+  if (Number.isNaN(remoteLastModified)) return true;
   return localLastModified < remoteLastModified;
 };
 
@@ -108,7 +121,7 @@ const main = async () => {
     const response = await request(link(editionId));
     const entryPromises = [];
     await new Promise((resolve, reject) =>
-      response.body
+      Readable.fromWeb(response.body)
         .pipe(zlib.createGunzip())
         .pipe(tar.t())
         .on('entry', (entry) => {
@@ -137,7 +150,6 @@ const main = async () => {
 
 main()
   .then(() => {
-    // success
     process.exit(0);
   })
   .catch((err) => {

@@ -1,6 +1,7 @@
-const assert = require('assert');
-const fs = require('fs');
-const geolite2 = require('../');
+import assert from 'node:assert';
+import fs from 'node:fs';
+
+import geolite2, { paths } from '../index.js';
 
 describe('geolite2', function () {
   const keys = [
@@ -15,9 +16,13 @@ describe('geolite2', function () {
 
   keys.forEach((key) =>
     it(`should return a database path for ${key}`, () => {
-      var stat = fs.statSync(geolite2.paths[key]);
+      const stat = fs.statSync(geolite2.paths[key]);
       assert(stat.size > 1e6);
       assert(stat.ctime);
     }),
   );
+
+  it('should expose paths as a named export', () => {
+    assert.strictEqual(paths, geolite2.paths);
+  });
 });

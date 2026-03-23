@@ -2,7 +2,17 @@
   "name": "geolite2",
   "version": "0.0.0-development",
   "description": "Maxmind's GeoLite2 Free Databases",
-  "main": "index.js",
+  "type": "module",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "keywords": [
     "maxmind",
     "mmdb",
@@ -30,7 +40,6 @@
   },
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {
-    "node-fetch": "^2.7.0",
     "tar": "^7.0.0"
   },
   "devDependencies": {
